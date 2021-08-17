@@ -5,12 +5,29 @@ const crypto = require('crypto');
 const app = express();
 const port = 3000;
 
+const { OnePasswordConnect } = require('@1password/connect');
+
+const op = OnePasswordConnect({
+    serverURL: 'http://localhost:8080',
+    token: process.env.OP_ACCESS_TOKEN,
+    keepAlive: true,
+});
+
+const getSecret = async (title) => {
+    try {
+        const item = await op.getItemByTitle(process.env.OP_VAULT_ID, title);
+        return item.fields[0].value;
+    } catch(error) {
+        console.log(error);
+    }
+}
+
 app.use(cors());
 app.use(express.json());
 
-const validateSignature = (req, res, next) => {
+const validateSignature = async (req, res, next) => {
     const signature = req.header('Signature');
-    const hmac = crypto.createHmac('sha256', process.env.WEBHOOK_SECRET).update(JSON.stringify(req.body)).digest('hex');
+    const hmac = crypto.createHmac('sha256', await getSecret("Webhook Secret")).update(JSON.stringify(req.body)).digest('hex');
     if(signature != hmac) {
         return next(new Error('Invalid signature'));
     }
