@@ -17,18 +17,44 @@ const validateSignature = async (req, res, next) => {
     return next();
 };
 
-app.post('/api/domains/autorenew', validateSignature, (req, res, next) => {
+app.post('/api/domains/autorenew', validateSignature, (req, res) => {
     console.log(req.body);
     res.json(req.body);
 });
 
-app.post('/api/domains/expiring', validateSignature,  (req, res, next) => {
+app.post('/api/domains/expiring', validateSignature,  (req, res) => {
+    console.log(req.body);
+    res.json(req.body);
+});
+
+app.post('/api/domains/expired', validateSignature,  (req, res) => {
+    console.log(req.body);
+    res.json(req.body);
+});
+
+app.post('/api/domains/transfer/pending', validateSignature, (req, res) => {
+    console.log(req.body);
+    res.json(req.body);
+});
+
+app.post('/api/domains/transfer/cancelled', validateSignature, (req, res) => {
+    console.log(req.body);
+    res.json(req.body);
+});
+
+app.post('/api/domains/transfer/approved', validateSignature, (req, res) => {
+    console.log(req.body);
+    res.json(req.body);
+});
+
+app.post('/api/domains/transfer/rejected', validateSignature, (req, res) => {
     console.log(req.body);
     res.json(req.body);
 });
 
 app.use((error, req, res, next) => {
     const { message } = error;
+    console.log(message);
     res.status(400).json({ message });
 });
 
